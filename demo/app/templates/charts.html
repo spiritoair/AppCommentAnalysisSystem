@@ -1,0 +1,328 @@
+{% macro charts(appid) %}
+<div class="charts">
+    <center>
+        <div id="cloud">
+        </div>
+    </center>
+    <div id="chart">
+        <div class="btn-group" role="group">
+            <!-- Split button start-->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="tdefault">上周分析图</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only"></span>
+                </button>
+                <ul class="dropdown-menu" id="showtype">
+                    <li><a href="#">上周分析图</a><span class="hidden">1</span></li>
+                    <li><a href="#">上月分析图</a><span class="hidden">2</span></li>
+                    <li><a href="#">上季分析图</a><span class="hidden">3</span></li>
+                    <li><a href="#">一年分析图</a><span class="hidden">4</span></li>
+                </ul>
+            </div>
+            <!-- Split button end-->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="cdefault">折线图</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only"></span>
+                </button>
+                <ul class="dropdown-menu" id="charttype">
+                    <li><a href="#">折线图</a><span class="hidden">1</span></li>
+                    <li><a href="#">直方图</a><span class="hidden">2</span></li>
+                    <li><a href="#">饼图</a><span class="hidden">3</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <!-- charts start -->
+            <div class="panel-body" id="chart-body" style="min-height: 400px;min-width: 600px">
+
+            </div>
+            <!--charts ends -->
+        </div>
+    </div>
+    <script>
+        function lineChart(time, like_count, normal_count, dislike_count) {
+            // $body = $('#chart-body');
+            // $body.empty();
+            var myChart = echarts.init(document.getElementById('chart-body'));
+            var option = {
+                title: {
+                    text: '折线图'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['喜欢', '一般', '有意见'] //
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    buttom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    data: time
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '喜欢',
+                    type: 'line',
+                    data: like_count
+                },
+                    {
+                        name: '一般',
+                        type: 'line',
+                        data: normal_count
+                    },
+                    {
+                        name: '有意见',
+                        type: 'line',
+                        data: dislike_count
+                    }]
+            };
+            myChart.setOption(option, true)
+        }
+
+        function columnChart(time, like_count, normal_count, dislike_count) {
+            // $body = $('#chart-body');
+            // $body.empty();
+            var myChart = echarts.init(document.getElementById('chart-body'));
+            var option = {
+                title: {
+                    text: '条形图'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['喜欢', '一般', '有意见'] //
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    buttom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value'
+                },
+                yAxis: {
+                    data: time
+                },
+                series: [{
+                    name: '喜欢',
+                    type: 'bar',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'insideRight'
+                        }
+                    },
+                    data: like_count
+                },
+                    {
+                        name: '一般',
+                        type: 'bar',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        data: normal_count
+                    },
+                    {
+                        name: '有意见',
+                        type: 'bar',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        data: dislike_count
+                    }]
+            };
+            myChart.setOption(option, true)
+        }
+
+        function pieChart(like_count, normal_count, dislike_count, total) {
+            // $body = $('#chart-body');
+            // $body.empty();
+            var like = 0, normal = 0, dislike = 0;
+            for (i in like_count) {
+                like += like_count[i];
+            }
+            for (i in normal_count) {
+                normal += normal_count[i];
+            }
+            for (i in dislike_count) {
+                dislike += dislike_count[i];
+            }
+            var myChart = echarts.init(document.getElementById('chart-body'));
+            var option = {
+                title: {
+                    text: '饼图',
+                    left: 'center',
+                    top: 20,
+                    textStyle: {
+                        color: '#333'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a}<br/>{b}:{c}({d}%)"
+                },
+                visualMap: {
+                    show: false,
+                    min: 80,
+                    max: 600,
+                    inRange: {
+                        colorLightness: [0, 1]
+                    }
+                },
+                series: [{
+                    name: '喜好饼图',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    data: [
+                        {
+                            value: like,
+                            name: '喜欢'
+                        }, {
+                            value: normal,
+                            name: '一般'
+                        }, {
+                            value: dislike,
+                            name: '有意见'
+                        }
+                    ].sort(function (a, b) {
+                        return a.value - b.value;
+                    }),
+                    roseType: 'radius',
+                    label: {
+                        normal: {
+                            textStyle: {
+                                color: 'rgba(255,255,255,0.3)'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            lineStyle: {
+                                color: 'rgba(255,255,255,0.3)'
+                            }
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#c23531',
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(0,0,0,0.5)'
+                        }
+                    },
+                    animationType: 'scale',
+                    animationEasing:
+                        'elasticOut',
+                    animationDelay: function (idx) {
+                        return Math.random() * 200
+                    }
+                }]
+            }
+            myChart.setOption(option, true);
+        };
+
+        $(function () {
+            var showtype = 1;// parseInt($("#show_type").text());
+            var charttype = 1; // default 1, 1 for line chart, 2 for column chart, 3 for pie chart
+            var time;
+            var appid = {{appid}};
+            var like_count;
+            var normal_count;
+            var dislike_count;
+            var total;
+            $.ajax({
+                url: "/api/keyword/{{appid}}",
+                type: "GET",
+                dataType: 'json',
+                success: function (data) {
+                    $("#cloud").jQCloud(data, {width: 800, height: 400})
+                }
+            });
+            get_data_list(appid, showtype);
+            $("#charttype a").click(function (e) {
+                var word = $(this).text();
+                chartype = parseInt($(this).siblings('span').text());
+                $('#cdefault').text(word);
+                $('.panel-heading').text(word);
+                //更新图表
+                if (chartype == 1) {
+                    lineChart(time, like_count, normal_count, dislike_count)
+                }
+                else if (chartype == 2) {
+                    columnChart(time, like_count, normal_count, dislike_count)
+                }
+                else if (chartype == 3) {
+                    pieChart(like_count, normal_count, dislike_count, total)
+                }
+                return false;
+            });
+            $("#showtype a").click(function (e) {
+                var word = $(this).text();
+                $('#cdefault').text('折线图');
+                showtype = parseInt($(this).siblings('span').text());
+                $('#tdefault').text(word);
+                get_data_list(appid, showtype)
+                //根据选择使用ajax更新data_list，并更新图表
+                if (charttype == 1) {
+                    lineChart(time, like_count, normal_count, dislike_count)
+                }
+                else if (charttype == 2) {
+                    columnChart(time, like_count, normal_count, dislike_count)
+                }
+                else {
+                    pieChart(like_count, normal_count, dislike_count, total)
+                }
+                return false;
+            });
+            function get_data_list(app_id, showtype) {
+                $.ajax({
+                    url: '/api/chart/' + app_id + '/' + showtype,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        total = 0;
+                        time = [];
+                        like_count = [];
+                        normal_count = [];
+                        dislike_count = [];
+                        for (d in data) {
+                            time.push(d);
+                            like_count.push(data[d]['like']);
+                            normal_count.push(data[d]['normal']);
+                            dislike_count.push(data[d]['dislike']);
+                            total += data[d]['like'];
+                            total += data[d]['normal'];
+                            total += data[d]['dislike']
+                        }
+                        lineChart(time, like_count, normal_count, dislike_count);
+                    }
+                })
+            }
+        });
+    </script>
+</div>
+{% endmacro %}

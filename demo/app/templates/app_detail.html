@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% import 'charts.html' as macros %}
+{%block title%}{{app.name}}{%endblock%}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/app_detail.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/jqcloud.css')}}">
+<script src="{{url_for('static',filename='scripts/jqcloud.min.js')}}"></script>
+<script src="{{url_for('static',filename='scripts/echarts.min.js')}}"></script>
+{% endblock %}
+{% block main%}
+<div class="container">
+    <!-- app title start -->
+    <div>
+        <span id="aid" style="display: none">{{app.id}}</span>
+        <h1>{{app.name}}</h1>
+        <span class="hidden" id="show_type">{{show_type}}</span>
+    </div>
+    <!-- app title end-->
+    <!-- charts start -->
+    <div>
+        {{ macros.charts(app.id) }}
+    </div>
+    <!-- charts end -->
+    <!-- comments start -->
+    <div>
+        <!--platform start -->
+        <center>
+            <ul class="nav nav-tabs nav-justified" role="tablist" id="mytabs">
+                {% for p in platforms %}
+                <li role="presentation"><span style="display: none">{{p.id}}</span><a href="#">{{p.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </center>
+        <!--platform end-->
+        <!--comment start-->
+        <div>
+            <table class="table">
+
+            </table>
+            <center>
+                <ul class="pagination" id="pages">
+                </ul>
+            </center>
+        </div>
+        <!--comment end-->
+    </div>
+</div>
+<!--end-->
+<script>
+    var page_unadded=true
+    function get_comment_list(aid, pid, page) {
+        url = "/api/comment/" + aid + "/" + pid + "/" + page;
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                theta1 = data['theta_1']
+                theta2 = data['theta_2']
+                $('.table').empty()
+                $(".table").append("<tr><th>发布时间</th><th>评分</th><th>评论内容</th><th>喜好程度</th></tr>")
+                for (d in data['comments']) {
+                    c = ''
+                    str = "一般";
+                    if (data['comments'][d]['rate'] * theta1 + data['comments'][d]['like_rate'] * theta2 > 0.66) {
+                        str = "喜欢";
+                        c = "success";
+                    }
+                    else if (data['comments'][d]['rate'] * theta1 + data['comments'][d]['like_rate'] * theta2 <= 0.33) {
+                        str = "有意见";
+                        c = "warning";
+                    }
+                    $('.table').append("<tr class='" + c + "'><td>" + data['comments'][d]['post_time'] + "</td><td>" + data['comments'][d]['rate'] + "</td><td>" + data['comments'][d]['text'] + "</td><td>" + str + "</td></tr>")
+                }
+                if (page_unadded) {
+                    page_unadded=false;
+                    pages = data['pages'];
+                    var $pagination = $('.pagination')
+                    for (i = 1; i <= pages; i++) {
+                        $pagination.append("<li class='page-item'><a class='page' href='#'>" + i + "</a></li>")
+                    }
+                }
+                $('.pagination li').removeClass('active')
+                $('.pagination li').eq(page - 1).addClass('active')
+                $('#pages a').click(function () {
+                    page = parseInt($(this).text())
+                    get_comment_list(aid, pid, page)
+                });
+            }
+        });
+    };
+
+    $(function () {
+        aid = $("#aid").text();
+        pid = $('#mytabs span:first').text();
+        page = 1;
+        $(".table").append("<tr><th>发布时间</th><th>评分</th><th>评论内容</th><th>喜好程度</th></tr>")
+        get_comment_list(aid, pid, page);
+        $('#mytabs a:first').addClass('active');
+        $('#mytabs a').click(function () {
+            page = 1;
+            $(".pagination").empty()
+            pid = $(this).siblings().text();
+            $('#mytabs a').removeClass('active');
+            $(this).addClass('active')
+            $(".table").empty()
+            $(".table").append("<tr><th>发布时间</th><th>评分</th><th>评论内容</th><th>喜好程度</th></tr>")
+            get_comment_list(aid, pid, page)
+        });
+    });
+
+</script>
+</div>
+{% endblock %}

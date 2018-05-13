@@ -1,0 +1,15 @@
+
+.logo{
+    width: 100px;
+}
+.content{
+    display: block;
+    min-height: 850px;
+}
+.footer{
+    text-align: center;
+}
+.active{
+    background: cornflowerblue;
+    color:white
+}

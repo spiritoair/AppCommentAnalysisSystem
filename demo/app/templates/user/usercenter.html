@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{%block title%}用户中心{%endblock%}
+{% block head %}
+{% endblock %}
+{%block main%}
+<div class="container">
+    <div class="right">
+        <h3>{{user.name}}的用户中心</h3>
+    </div>
+    <div>
+        <ul class="nav nav-pills nav-justified">
+            <li role="presentation" class="active" id="follow"><a href="#">我的关注</a></li>
+            <li role="presentation" id="infomation"><a href="#">信息修改</a></li>
+        </ul>
+    </div>
+    <div id="follow_detail">
+        <div style="margin-top: 10px">
+        {% for item in list%}
+        <div class="col-md-3 btn btn-default"><a href="/app-detail/{{item['id']}}">{{item['name']}}</a></div>
+        {% endfor %}
+        </div>
+    </div>
+    <div id="info_detail" style="display: none">
+        <div class="form-group">
+            <div class="col-md-3 text-right"><label>电子邮箱：</label></div>
+            <div class="col-md-offset-3">
+                <input type="text" value="{{user.email}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3 text-right"><label>默认展示：</label></div>
+            <div class="col-md-9">
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="show_type"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Dropdown
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="show_type">
+                        <li><a href="#">展示一周</a><span style="display: none">1</span></li>
+                        <li><a href="#">展示一月</a><span style="display: none">2</span></li>
+                        <li><a href="#">展示一季</a><span style="display: none">3</span></li>
+                        <li><a href="#">展示一年</a><span style="display: none">4</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-offset-3">
+                <div class="btn-group" style="margin-top: 10px">
+                    <span class="btn btn-default">提交</span>
+                    <span class="btn btn-primary">修改密码</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var $follow = $('#follow_detail')
+        var $infomation = $('#info_detail')
+        $('#follow').click(function () {
+            $follow.show()
+            $infomation.hide()
+            $(this).addClass('active')
+            $('#infomation').removeClass('active')
+        })
+        $('#infomation').click(function () {
+            $follow.hide()
+            $infomation.show()
+            $(this).addClass('active')
+            $('#follow').removeClass('active')
+        })
+        var type = {{user.show_type}}
+        var str = ""
+        if (type == 1) {
+            str = "显示一周"
+        }
+        else if (type == 2) {
+            str = "显示一月"
+        }
+        else if (type == 3) {
+            str = "显示一季"
+        }
+        else if (type == 4) {
+            str = "显示一年"
+        }
+        $('#show_type').text(str)
+        $('.dropdown-menu a').click(function () {
+            str=$(this).text()
+            $('#show_type').text(str)
+        })
+    })
+</script>
+{%endblock%}

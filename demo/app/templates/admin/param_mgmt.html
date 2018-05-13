@@ -1,0 +1,17 @@
+{% extends "admin_base.html" %}
+{%block title%}系统配置{%endblock%}
+{% block head %}
+{% endblock %}
+{%block main%}
+<div class="col-md-offset-1">
+    <div class="col-md-3"><span class="btn btn-default">修改</span></div>
+</div>
+
+{% for th in theta %}
+<div class="col-md-12">
+    <div class="col-md-3">参数1：</div>
+    <div class="col-md-3"><span>{{th.num}}</span></div>
+</div>
+{% endfor %}
+
+{%endblock%}

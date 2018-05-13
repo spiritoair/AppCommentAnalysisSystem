@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}首页{% endblock %}
+{% block main %}
+<div class="container">
+    <div class="jumbotron">
+        <h1>欢迎使用APP评论分析</h1>
+        <p>每一款手机应用，都会在不同的平台做发布。很多用户会在各个平台评论该款应用的使用感受，这些感受因为来自直接客户的评价，因而十分珍贵。本平台致力于APP评论数据的收集与分析，帮助用户更好的对APP进行改进优化。</p>
+        <p><a href="/login" class="btn btn-primary btn-lg" role="button">马上登录</a></p>
+    </div>
+    {% block list %}
+    {% endblock %}
+</div>
+{% endblock %}
